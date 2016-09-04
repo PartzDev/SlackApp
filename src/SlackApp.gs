@@ -1,5 +1,4 @@
 
-var _ = Underscore.load();
 /**
  * @type {String}
  */
@@ -18,7 +17,7 @@ var SCOPE_POST="post";
  * @return {SlackApp} return an Slack API Client 
  */
 function create(token){
-  return new SlackApp(null, null, null, null, {token : token || "xoxb-76097996887-asiSNdSQn434AbXAx68QJMLu"});
+  return new SlackApp(null, null, null, null, {token : token});
 }
 /**
  * Create an Slack API Client by ClientId
@@ -688,6 +687,40 @@ function getCallbackURL(callback,optArg) {
 var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 (function(exports) {
+  
+  if (!Object.assign) {
+    Object.defineProperty(Object, 'assign', {
+      enumerable: false,
+      configurable: true,
+      writable: true,
+      value: function(target) {
+        'use strict';
+        if (target === undefined || target === null) {
+          throw new TypeError('Cannot convert first argument to object');
+        }
+        
+        var to = Object(target);
+        for (var i = 1; i < arguments.length; i++) {
+          var nextSource = arguments[i];
+          if (nextSource === undefined || nextSource === null) {
+            continue;
+          }
+          nextSource = Object(nextSource);
+          
+          var keysArray = Object.keys(Object(nextSource));
+          for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
+            var nextKey = keysArray[nextIndex];
+            var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
+            if (desc !== undefined && desc.enumerable) {
+              to[nextKey] = nextSource[nextKey];
+            }
+          }
+        }
+        return to;
+      }
+    });
+  }
+  
   var SlackApp;
   SlackApp = (function() {
     function SlackApp(team, clientId, clientSecret, scopes, option1) {
@@ -772,7 +805,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       if (optParams == null) {
         optParams = {};
       }
-      return this.fetch_("channels.history", _.extend({
+      return this.fetch_("channels.history", Object.assign({
         channel: channelId
       }, optParams));
     };
@@ -853,7 +886,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       if (option == null) {
         option = {};
       }
-      return this.fetch_("chat.postMessage", _.extend({
+      return this.fetch_("chat.postMessage", Object.assign({},{
         channel: channelId,
         text: text
       }, option));
@@ -882,7 +915,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       if (option == null) {
         option = {};
       }
-      return this.fetch_("files.info", _.extend({
+      return this.fetch_("files.info", Object.assign({
         file: fileId
       }, option));
     };
@@ -898,7 +931,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       if (option == null) {
         option = {};
       }
-      return this.fetch_("files.upload", _.extend({
+      return this.fetch_("files.upload", Object.assign({
         file: fileBlob
       }, option));
     };
@@ -919,7 +952,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       if (option == null) {
         option = {};
       }
-      return this.fetch_("groups.history", _.extend({
+      return this.fetch_("groups.history", Object.assign({
         channel: channelId
       }, option));
     };
@@ -980,7 +1013,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       if (option == null) {
         option = {};
       }
-      return this.fetch_("im.history", _.extend({
+      return this.fetch_("im.history", Object.assign({
         channel: channelId
       }, option));
     };
@@ -1012,7 +1045,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       if (option == null) {
         option = {};
       }
-      return this.fetch_("search.all", _.extend({
+      return this.fetch_("search.all", Object.assign({
         query: query
       }, option));
     };
@@ -1021,7 +1054,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       if (option == null) {
         option = {};
       }
-      return this.fetch_("search.files", _.extend({
+      return this.fetch_("search.files", Object.assign({
         query: query
       }, option));
     };
@@ -1030,7 +1063,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       if (option == null) {
         option = {};
       }
-      return this.fetch_("search.messages", _.extend({
+      return this.fetch_("search.messages", Object.assign({
         query: query
       }, option));
     };
@@ -1164,6 +1197,6 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
 
     return SlackApp;
 
-  })();
+  })();  
   return exports.SlackApp = SlackApp;
 })(this);
